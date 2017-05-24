@@ -28,8 +28,6 @@ public class Employee implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	// @SequenceGenerator(name = "pk_employee_sequence", sequenceName =
-	// "employee_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long employeeId;
 	private String ad;
