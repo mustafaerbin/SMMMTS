@@ -1,0 +1,196 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<ui:define name="content">
+		<div class="ContainerIndent">
+			<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+				<p:panel>
+					<div class="ContainerIndent">
+						<h:form>
+							<h:panelGrid columns="3">
+								<p:outputLabel for="name" value="Mukellef Adı : "
+									style="font-weight:bold" />
+								<p:inputText id="name" value="#{aidatlarMB.id}"
+									requiredMessage="Adı boş bırakılamaz!" required="false" />
+								<p:commandButton value="Ara"
+									actionListener="#{aidatlarMB.getEmployeeById}"
+									styleClass="ui-priority-primary" update=":form" />
+							</h:panelGrid>
+						</h:form>
+					</div>
+
+					<div class="ContainerIndent">
+						<h:form id="form">
+							<p:growl id="msgs" showDetail="true" />
+							<p:dataTable id="singleDT" var="aidat"
+								value="#{aidatlarMB.aidatList}" selectionMode="single"
+								selection="#{aidatlarMB.selectedAidat}" rowKey="#{aidat.aidatId}"
+								filteredValue="#{aidatlarMB.filteredAidat}" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								sortBy="#{employee.ad}" sortOrder="ASCENDING"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" emptyMessage="Student not found">
+								<p:ajax event="rowSelect" listener="#{aidatlarMB.onRowSelect}"
+									update=":form" />
+
+								<p:column headerText="Adı Soyadı"
+									styleClass="#{(aidat.miktar - aidat.miktarOdenen) gt 0 ? 'redCell' : 'redCell'}
+                                                   ">
+									<h:outputText
+										value="#{aidat.mukellef.ad} #{aidat.mukellef.soyad}" />
+								</p:column>
+
+								<p:column headerText="Ay" filterable="false"
+									filterBy="#{aidat.ay}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.ay}" />
+								</p:column>
+
+								<p:column headerText="Yıl" filterable="false"
+									filterBy="#{aidat.yil}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.yil}" />
+								</p:column>
+
+								<p:column headerText="Miktar" filterable="false"
+									filterBy="#{aidat.miktar}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.miktar}" />
+								</p:column>
+
+								<p:column headerText="Ödenen Miktar" filterable="false"
+									filterBy="#{aidat.miktarOdenen}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.miktarOdenen}" />
+								</p:column>
+
+								<p:column headerText="Kalan Miktar" filterable="false"
+									filterMatchMode="contains">
+									<h:outputText value="#{aidat.miktar - aidat.miktarOdenen}" />
+								</p:column>
+
+								<p:column style="width:14px" headerText="" priority="3">
+									<p:commandLink title="Mükellef Aidatı Gördü"
+										styleClass="#{(aidat.goruldu) gt 'false' ? 'ui-icon ui-icon-person' : null}">
+									</p:commandLink>
+								</p:column>
+
+								<f:facet name="footer"> 
+									<p:commandButton process="singleDT" update=":detail"
+										disabled="#{aidatlarMB.enableButton}" value="Detail"
+										icon="ui-icon-zoomout" oncomplete="PF('detail').show()" />
+									<p:commandButton process="singleDT" update=":update"
+										value="Update" icon="ui-icon-plus"
+										disabled="#{aidatlarMB.enableButton}"
+										oncomplete="PF('update').show()" />
+									<p:commandButton process="singleDT" update=":delete"
+										styleClass="RedButton" disabled="#{aidatlarMB.enableButton}"
+										value="Delete" icon="ui-icon-minus"
+										oncomplete="PF('delete').show()" />
+								</f:facet>
+							</p:dataTable>
+						</h:form>
+					</div>
+				</p:panel>
+
+				<p:dialog header="Add Student" widgetVar="add" modal="true"
+					showEffect="fade" hideEffect="clip" draggable="false"
+					resizable="false" responsive="true">
+					<h:form id="add">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-4,ui-grid-col-8">
+								<p:outputLabel for="name" value="Name:" style="font-weight:bold" />
+								<p:inputText id="name" value="#{aidatlarMB.name}"
+									requiredMessage="Name required!" required="true" />
+								<f:facet name="footer">
+									<p:commandButton value="Add" id="ajax"
+										actionListener="#{aidatlarMB.addAidat}"
+										styleClass="ui-priority-primary" oncomplete="PF('add').hide()"
+										update=":form" />
+									<p:commandButton value="Cancel" id="ajaxx"
+										styleClass="RedButton" style="float:right"
+										oncomplete="PF('add').hide()" immediate="true" />
+								</f:facet>
+							</p:panelGrid>
+						</p:panel>
+					</h:form>
+				</p:dialog>
+
+				<p:dialog header="Update Mukellef" widgetVar="update" modal="true"
+					showEffect="fade" hideEffect="clip" draggable="false"
+					resizable="false" responsive="true">
+					<h:form id="update">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-4,ui-grid-col-8">
+								<p:outputLabel value="Name:" style="font-weight:bold" />
+								<p:inputText id="ad" value="#{aidatlarMB.selectedAidat.aidatId}"
+									required="true" />
+								<f:facet name="footer">
+									<p:commandButton value="Update" id="ajax"
+										actionListener="#{aidatlarMB.updateAidat}"
+										styleClass="ui-priority-primary"
+										oncomplete="PF('update').hide()" update=":form" />
+									<p:commandButton value="Cancel" id="ajaxx"
+										styleClass="RedButton" style="float:right"
+										oncomplete="PF('update').hide()" immediate="true" />
+								</f:facet>
+							</p:panelGrid>
+						</p:panel>
+					</h:form>
+				</p:dialog>
+
+				<p:dialog header="Delete Student" widgetVar="delete" modal="true"
+					showEffect="fade" hideEffect="clip" draggable="false"
+					resizable="false" responsive="true">
+					<h:form id="delete">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-4,ui-grid-col-8">
+								<p:outputLabel value="'#{aidatlarMB.selectedAidat.aidatId}'"
+									style="font-weight:bold" />
+								<p:outputLabel value="Selected data will delete?"
+									style="float:right" />
+								<f:facet name="footer">
+									<p:commandButton value="Delete" id="ajax"
+										actionListener="#{aidatlarMB.deleteAidat}"
+										styleClass="ui-priority-primary"
+										oncomplete="PF('delete').hide()" update=":form" />
+									<p:commandButton value="Cancel" id="ajaxx"
+										styleClass="RedButton" style="float:right"
+										oncomplete="PF('delete').hide()" immediate="true" />
+								</f:facet>
+							</p:panelGrid>
+						</p:panel>
+					</h:form>
+				</p:dialog>
+
+				<p:dialog header="Kullanıcı Detay" widgetVar="detail" modal="true"
+					showEffect="fade" hideEffect="clip" resizable="false"
+					responsive="true">
+					<h:form id="detail">
+						<h:panelGrid columns="1">
+							<p:outputPanel id="showTitle" style="text-align:center;">
+								<p:panelGrid columns="2" columnClasses="label,value">
+									<h:outputText value="Name:" style="float:left" />
+									<h:outputText value="#{aidatlarMB.selectedAidat.aidatId}"
+										style="float:left" />
+									<h:outputText value="Kullanıcı Adı : " style="float:left" />
+									<h:outputText value="#{aidatlarMB.selectedAidat.aidatId}"
+										style="float:left" />
+								</p:panelGrid>
+							</p:outputPanel>
+
+						</h:panelGrid>
+					</h:form>
+				</p:dialog>
+
+			</sec:authorize>
+		</div>
+	</ui:define>
+
+</ui:composition>

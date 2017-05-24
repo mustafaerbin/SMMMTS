@@ -1,0 +1,97 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<ui:define name="content">
+		<div class="ContainerIndent">
+			<sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+				<p:panel> 
+
+					<div class="ContainerIndent">
+						<h:form id="form">
+							<p:growl id="msgs" showDetail="true" />
+							<p:dataTable id="singleDT" var="aidat"
+								value="#{aidatMB.aidatList}" selectionMode="single"
+								selection="#{aidatMB.selectedAidat}" rowKey="#{aidat.aidatId}"
+								filteredValue="#{aidatMB.filteredAidat}" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								sortBy="#{employee.ad}" sortOrder="ASCENDING"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" emptyMessage="Aidat Bulunamadı">
+								<p:ajax event="rowSelect" listener="#{aidatMB.onRowSelect}"
+									update=":form" />
+
+								<p:column headerText="Adı Soyadı"
+									styleClass="#{(aidat.miktar - aidat.miktarOdenen) gt 0 ? 'redCell' : 'redCell'}
+                                                   ">
+									<h:outputText
+										value="#{aidat.mukellef.ad} #{aidat.mukellef.soyad}" />
+								</p:column>
+
+								<p:column headerText="Ay" filterable="false"
+									filterBy="#{aidat.ay}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.ay}" />
+								</p:column>
+
+								<p:column headerText="Yıl" filterable="false"
+									filterBy="#{aidat.yil}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.yil}" />
+								</p:column>
+
+								<p:column headerText="Miktar" filterable="false"
+									filterBy="#{aidat.miktar}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.miktar}" />
+								</p:column>
+
+								<p:column headerText="Ödenen Miktar" filterable="false"
+									filterBy="#{aidat.miktarOdenen}" filterMatchMode="contains">
+									<h:outputText value="#{aidat.miktarOdenen}" />
+								</p:column>
+
+								<p:column headerText="Kalan Miktar" filterable="false"
+									filterMatchMode="contains">
+									<h:outputText value="#{aidat.miktar - aidat.miktarOdenen}" />
+								</p:column> 
+
+								<f:facet name="footer">
+									<p:commandButton process="singleDT" update=":add" value="Add"
+										icon="ui-icon-plus" oncomplete="PF('add').show()" /> 
+								</f:facet>
+							</p:dataTable>
+						</h:form>
+					</div>
+				</p:panel>
+
+				<p:dialog header="Add Student" widgetVar="add" modal="true"
+					showEffect="fade" hideEffect="clip" draggable="false"
+					resizable="false" responsive="true">
+					<h:form id="add">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-4,ui-grid-col-8">
+								<p:outputLabel for="name" value="Name:" style="font-weight:bold" />
+								<p:inputText id="name" value="#{aidatMB.name}"
+									requiredMessage="Name required!" required="true" />
+								<f:facet name="footer">
+									<p:commandButton value="Add" id="ajax"
+										actionListener="#{aidatMB.addAidat}"
+										styleClass="ui-priority-primary" oncomplete="PF('add').hide()"
+										update=":form" />
+									<p:commandButton value="Cancel" id="ajaxx"
+										styleClass="RedButton" style="float:right"
+										oncomplete="PF('add').hide()" immediate="true" />
+								</f:facet>
+							</p:panelGrid>
+						</p:panel>
+					</h:form>
+				</p:dialog>
+
+			</sec:authorize>
+		</div>
+	</ui:define>
+
+</ui:composition>

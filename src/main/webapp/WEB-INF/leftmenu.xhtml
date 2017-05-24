@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ps="http://primefaces.org/sentinel"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<div id="layout-menubar" class="Unselectable fontRegular">
+		<div class="layout-menubarinner-box" id="buttonArea">
+			<a href="#" id="layout-menubar-resize" class="BordRad3"
+				title="Menu Resize"><i class="icon-th-list-2"></i></a> <a href="#"
+				id="layout-menubar-resize2" class="BordRad3" title="Open Menu"><i
+				class="icon-menu"></i></a>
+		</div>
+
+		<div class="layout-menubarinner-box" id="searchArea">
+			<i class="icon-search floatLeft gray"></i> <input type="text"
+				class="layout-menubar-search floatLeft Animated05"
+				placeholder="Search Here" />
+		</div>
+		<h:form>
+			<ps:menu id="sm_leftmenu">
+
+				<p:menuitem id="sm_dashboard" value="Ana Sayfa"
+					icon="icon-home-outline" url="/pages/secure/dashboard.xhtml"
+					containerStyleClass="layout-menubar-active" />
+
+				<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+					<p:menuitem id="sm_mukellef" access="hasAnyRole('ROLE_ADMIN')"
+						value="Mukellefler" icon="icon-table"
+						url="/pages/secure/mukellef.xhtml"
+						containerStyleClass="layout-menubar-active" />
+				</sec:authorize>
+
+				<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+					<p:menuitem id="sm_aidatlar" access="hasAnyRole('ROLE_ADMIN')"
+						value="Aidatlar (Admin)" icon="icon-th"
+						url="/pages/secure/aidatlar.xhtml"
+						containerStyleClass="layout-menubar-active" />
+				</sec:authorize>
+
+				<sec:authorize
+					access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+					<p:menuitem id="sm_aidat" access="hasAnyRole('ROLE_ADMIN')"
+						value="Aidatlar" icon="icon-th" url="/pages/secure/aidat.xhtml"
+						containerStyleClass="layout-menubar-active" />
+				</sec:authorize>
+
+				<p:menuitem id="sm_student" access="hasAnyRole('ROLE_ADMIN')"
+					value="Student -Named Query Example" icon="icon-table"
+					url="/pages/secure/student.xhtml"
+					containerStyleClass="layout-menubar-active" />
+				<p:menuitem id="sm_stuff"
+					value="Stuff -Inheritance Strategy Example" icon="icon-th"
+					url="/pages/secure/stuff.xhtml"
+					containerStyleClass="layout-menubar-active" />
+				<p:menuitem id="sm_education" value="Education -Relation Example"
+					icon="icon-graduation-cap" url="/pages/secure/education.xhtml"
+					containerStyleClass="layout-menubar-active" />
+				<p:submenu id="sm_menu" label="Menu Hierarchy" icon="icon-sitemap">
+					<p:submenu id="sm_sub1" label="Submenu 1" icon="icon-folder-empty">
+						<p:submenu id="sm_sub1_1" label="Submenu 1.1"
+							icon="icon-folder-empty">
+							<p:submenu id="sm_sub1_1_1" label="Submenu 1.1.1"
+								icon="icon-folder-empty">
+
+								<sec:authorize
+									access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
+									<p:menuitem id="sm_lnk1" value="Empty Page" icon="icon-link"
+										url="/pages/secure/empty-page.xhtml" />
+								</sec:authorize>
+								<p:menuitem id="sm_lnk2" value="Link 2" icon="icon-link" />
+								<p:menuitem id="sm_lnk3" value="Link 3" icon="icon-link" />
+							</p:submenu>
+						</p:submenu>
+					</p:submenu>
+				</p:submenu>
+
+			</ps:menu>
+		</h:form>
+	</div>
+
+</ui:composition>

@@ -1,0 +1,162 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<ui:define name="content">
+		<div class="ContainerIndent">
+			<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+			</sec:authorize>
+				<p:panel>
+					<div class="ContainerIndent">
+						<h:form id="form">
+							<p:growl id="msgs" showDetail="true" />
+							<p:dataTable id="singleDT" var="stuffPojo"  style="width:650px;"
+								value="#{stuffMB.stuffList}" selectionMode="single"
+								selection="#{stuffMB.selectedStuff}" rowKey="#{stuffPojo.id}"
+								filteredValue="#{stuffMB.filteredStuff}" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								sortBy="#{student.sname}" sortOrder="ASCENDING"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" emptyMessage="Stuff not found">
+								<f:facet name="header">
+							            Stuff List 
+				           </f:facet>
+								<p:ajax event="rowSelect" listener="#{stuffMB.onRowSelect}"
+									update=":form" />
+								<p:column headerText="Id" filterable="true"
+									filterBy="#{stuffPojo.id}" filterMatchMode="contains">
+									<h:outputText value="#{stuffPojo.id}" />
+								</p:column>
+								<p:column headerText="Name" filterable="true"
+									filterBy="#{stuffPojo.name}" filterMatchMode="contains">
+									<h:outputText value="#{stuffPojo.name}" />
+								</p:column>
+								<p:column headerText="Education Level" filterable="true"
+									filterBy="#{stuffPojo.educationLevel}"
+									filterMatchMode="contains">
+									<h:outputText value="#{stuffPojo.educationLevel}" />
+								</p:column>
+								<p:column headerText="Qualification" filterable="true"
+									filterBy="#{stuffPojo.qualification}"
+									filterMatchMode="contains">
+									<h:outputText value="#{stuffPojo.qualification}" />
+								</p:column>
+								<p:column headerText="Expertise" filterable="true"
+									filterBy="#{stuffPojo.expertise}" filterMatchMode="contains">
+									<h:outputText value="#{stuffPojo.expertise}" />
+								</p:column>
+								<f:facet name="footer">
+									<p:commandButton process="singleDT" update=":add"
+										value="Add Technical Stuff" icon="ui-icon-plus"
+										oncomplete="PF('add').show()" />
+									<p:commandButton process="singleDT" update=":addNon"
+										value="Add NonTechnical Stuff" icon="ui-icon-plus"
+										oncomplete="PF('addNon').show()" />
+									<p:commandButton process="singleDT" update=":detail"
+										disabled="#{stuffMB.enableButton}" value="Detail"
+										icon="ui-icon-zoomout" oncomplete="PF('detail').show()" />
+								</f:facet>
+							</p:dataTable>
+						</h:form>
+					</div>
+
+				</p:panel>
+				<p:dialog header="Add Technical Stuff" widgetVar="add" modal="true"
+					showEffect="fade" hideEffect="clip" draggable="false"
+					resizable="false" responsive="true">
+					<h:form id="add">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-4,ui-grid-col-8">
+								<p:outputLabel for="name" value="Name:" style="font-weight:bold" />
+								<p:inputText id="name" value="#{stuffMB.name}"
+									requiredMessage="Name required" required="true" />
+								<p:outputLabel for="a" value="Education level:"
+									style="font-weight:bold" />
+								<p:inputText id="a" value="#{stuffMB.educationLevel}"
+									requiredMessage="Education Level required!" required="true" />
+								<p:outputLabel for="b" value="Qualification"
+									style="font-weight:bold" />
+								<p:inputText id="b" value="#{stuffMB.qualification}"
+									requiredMessage="Qualification required!" required="true" />
+								<f:facet name="footer">
+									<p:commandButton value="Add" id="ajax"
+										actionListener="#{stuffMB.addTechnicalStuff}"
+										styleClass="ui-priority-primary" oncomplete="PF('add').hide()"
+										update=":form" />
+									<p:commandButton value="Cancel" id="ajaxx"
+										styleClass="RedButton" style="float:right"
+										oncomplete="PF('add').hide()" immediate="true" />
+								</f:facet>
+							</p:panelGrid>
+						</p:panel>
+					</h:form>
+				</p:dialog>
+
+				<p:dialog header="Add NonTechnical Stuff" widgetVar="addNon"
+					modal="true" showEffect="fade" hideEffect="clip" draggable="false"
+					resizable="false" responsive="true">
+					<h:form id="addNon">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-4,ui-grid-col-8">
+								<p:outputLabel for="name" value="Name:" style="font-weight:bold" />
+								<p:inputText id="name" value="#{stuffMB.name}"
+									requiredMessage="Name required!" required="true" />
+								<p:outputLabel for="a" value="Expertise"
+									style="font-weight:bold" />
+								<p:inputText id="a" value="#{stuffMB.expertise}"
+									requiredMessage="Expertise required!" required="true" />
+								<f:facet name="footer">
+									<p:commandButton value="Add" id="ajax"
+										actionListener="#{stuffMB.addNonTechnicalStuff}"
+										styleClass="ui-priority-primary"
+										oncomplete="PF('addNon').hide()" update=":form" />
+									<p:commandButton value="Cancel" id="ajaxx"
+										styleClass="RedButton" style="float:right"
+										oncomplete="PF('addNon').hide()" immediate="true" />
+								</f:facet>
+							</p:panelGrid>
+						</p:panel>
+					</h:form>
+				</p:dialog>
+
+
+				<p:dialog header="Stuff Detail" widgetVar="detail" modal="true"
+					showEffect="fade" hideEffect="clip" resizable="false"
+					responsive="true">
+					<h:form id="detail">
+						<h:panelGrid columns="1">
+							<p:outputPanel id="showTitle" style="text-align:center;">
+								<p:panelGrid columns="2" columnClasses="label,value">
+									<h:outputText value="Name" style="float:left" />
+									<h:outputText value="#{stuffMB.selectedStuff.name}"
+										style="float:left" />
+									<h:outputText value="Education Level:" style="float:left" />
+									<h:outputText value="#{stuffMB.selectedStuff.educationLevel}"
+										style="float:left" />
+									<h:outputText value="Qualification" style="float:left" />
+									<h:outputText value="#{stuffMB.selectedStuff.qualification}"
+										style="float:left" />
+
+									<h:outputText value="Expertise" style="float:left" />
+									<h:outputText value="#{stuffMB.selectedStuff.expertise}"
+										style="float:left" />
+								</p:panelGrid>
+							</p:outputPanel>
+
+						</h:panelGrid>
+					</h:form>
+				</p:dialog>
+
+		</div>
+
+	</ui:define>
+
+
+</ui:composition>

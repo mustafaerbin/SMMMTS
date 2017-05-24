@@ -1,0 +1,159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                 xmlns:sec="http://www.springframework.org/security/tags">
+
+     <ui:define name="content">
+        <div class="ContainerIndent">
+         <sec:authorize access="hasAnyRole('ROLE_ADMIN')"> 
+            <p:panel>
+              <div class="ContainerIndent">
+              <h:form>
+              <h:panelGrid columns="3">
+                <p:outputLabel for="name" value="Student Id:" style="font-weight:bold" />
+				<p:inputText id="name" value="#{studentMB.id}" requiredMessage="İd boş bırakılamaz!"	required="false" />
+                 <p:commandButton value="Search" actionListener="#{studentMB.getStudentById}"
+													styleClass="ui-priority-primary" update=":form" />
+              </h:panelGrid>
+             </h:form>
+              </div>
+                <div class="ContainerIndent">
+                    <h:form id="form">
+                    <p:growl id="msgs" showDetail="true" />
+                        <p:dataTable id="singleDT" var="student"  value="#{studentMB.studentList}" selectionMode="single" selection="#{studentMB.selectedStudent}" rowKey="#{student.sid}" filteredValue="#{studentMB.filteredStudent}" style="width:650px;"
+                                     rows="10" paginator="true" paginatorPosition="bottom" sortBy="#{student.sname}" sortOrder="ASCENDING"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15" emptyMessage="Student not found" >
+                          <f:facet name="header">
+							            Students 
+				           </f:facet>
+				        <p:ajax event="rowSelect" listener="#{studentMB.onRowSelect}" update=":form" />
+				          <p:column headerText="Id" filterable="true" filterBy="#{student.sid}" filterMatchMode="contains" >
+			               <h:outputText value="#{student.sid}"/>
+			            </p:column>
+			            <p:column headerText="Name" filterable="true" filterBy="#{student.sname}" filterMatchMode="contains" >
+			               <h:outputText value="#{student.sname}"/>
+			            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton process="singleDT" update=":add" value="Add" icon="ui-icon-plus" oncomplete="PF('add').show()" />
+                                <p:commandButton process="singleDT" update=":detail" disabled="#{studentMB.enableButton}" value="Detail" icon="ui-icon-zoomout" oncomplete="PF('detail').show()" />
+                                <p:commandButton process="singleDT" update=":update" value="Update" icon="ui-icon-plus" disabled="#{studentMB.enableButton}" oncomplete="PF('update').show()" />
+                                <p:commandButton process="singleDT" update=":delete" styleClass="RedButton" disabled="#{studentMB.enableButton}" value="Delete" icon="ui-icon-minus" oncomplete="PF('delete').show()" />
+                                  <p:commandButton process="singleDT" update=":choose" styleClass="OrangeButton" disabled="#{studentMB.enableButton}" value="Choose Lecture" icon="ui-icon-minus" oncomplete="PF('choose').show()" />
+                             </f:facet>   
+                        </p:dataTable>
+                         </h:form>
+                            </div>
+
+ 					</p:panel>
+ 							  <p:dialog header="Add Student" widgetVar="add" modal="true" showEffect="fade" hideEffect="clip" draggable="false" resizable="false" responsive="true">
+	                            <h:form id="add">
+	                                <p:panel>
+										<p:panelGrid  columns="2" layout="grid"  styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4,ui-grid-col-8" >
+											<p:outputLabel for="name" value="Name:" style="font-weight:bold" />
+											<p:inputText id="name" value="#{studentMB.name}" requiredMessage="Name required!"	required="true" />
+											<f:facet name="footer">	
+												<p:commandButton value="Add" id="ajax"
+													actionListener="#{studentMB.addStudent}"
+													styleClass="ui-priority-primary" oncomplete="PF('add').hide()"
+													update=":form" />
+												<p:commandButton value="Cancel" id="ajaxx"
+													styleClass="RedButton" style="float:right"
+													oncomplete="PF('add').hide()" immediate="true"/>
+													</f:facet>
+										</p:panelGrid>
+									</p:panel>	
+								</h:form>
+	                        </p:dialog>
+ 					
+ 					
+	 					  <p:dialog header="Update Student" widgetVar="update" modal="true" showEffect="fade" hideEffect="clip" draggable="false" resizable="false" responsive="true">
+		                            <h:form id="update">
+		                                <p:panel>
+											<p:panelGrid  columns="2" layout="grid"  styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4,ui-grid-col-8" >
+													<p:outputLabel  value="Name:"
+														style="font-weight:bold" />
+													<p:inputText id="ad" 
+														value="#{studentMB.selectedStudent.sname}" required="true" />
+												<f:facet name="footer">	
+													<p:commandButton value="Update" id="ajax"
+														actionListener="#{studentMB.updateStudent}"
+														styleClass="ui-priority-primary" oncomplete="PF('update').hide()"
+														update=":form" />
+													<p:commandButton value="Cancel" id="ajaxx"
+														styleClass="RedButton" style="float:right"
+														oncomplete="PF('update').hide()" immediate="true"/>
+														</f:facet>
+											</p:panelGrid>
+										</p:panel>	
+									</h:form>
+		                   </p:dialog>
+						   <p:dialog header="Delete Student" widgetVar="delete" modal="true" showEffect="fade" hideEffect="clip" draggable="false" resizable="false" responsive="true">
+                            <h:form id="delete">
+                                <p:panel>
+									<p:panelGrid  columns="2" layout="grid"  styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4,ui-grid-col-8" >
+										<p:outputLabel  value="'#{studentMB.selectedStudent.sname}'" style="font-weight:bold" />
+										<p:outputLabel  value="Selected data will delete?" style="float:right" />
+										<f:facet name="footer">	
+											<p:commandButton value="Delete" id="ajax"
+												actionListener="#{studentMB.deleteStudent}"
+												styleClass="ui-priority-primary" oncomplete="PF('delete').hide()"
+												update=":form" />
+											<p:commandButton value="Cancel" id="ajaxx"
+												styleClass="RedButton" style="float:right"
+												oncomplete="PF('delete').hide()" immediate="true"/>
+												</f:facet>
+									</p:panelGrid>
+								</p:panel>	
+							</h:form>
+                        </p:dialog>
+						
+						<p:dialog header="Student Detail" widgetVar="detail" modal="true" showEffect="fade" hideEffect="clip" resizable="false" responsive="true">
+                            <h:form id="detail">
+									<h:panelGrid columns="1">
+									<p:outputPanel id="showTitle" style="text-align:center;">
+										<p:panelGrid columns="2"
+											columnClasses="label,value">
+											<h:outputText value="Name:" style="float:left" />
+											<h:outputText value="#{studentMB.selectedStudent.sname}"
+												style="float:left" />
+										</p:panelGrid>
+									</p:outputPanel>
+										
+									</h:panelGrid>
+							</h:form>
+                        </p:dialog>
+						<p:dialog id="lecture" header="Student Lectures"
+							widgetVar="choose" modal="true" showEffect="fade" hideEffect="clip"
+							resizable="false" responsive="true">
+							<h:form id="choose">
+								<h:panelGrid columns="1">
+										<p:dataTable id="checkboxDT" var="lecture"  value="#{studentMB.lectureList}" selection="#{studentMB.selectedLectures}" rowKey="#{lecture.id}" style="margin-bottom:0;width:150px">
+									        <f:facet name="header">
+									            Lectures
+									        </f:facet>
+									        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+									        <p:column headerText="Lecture">
+									            <h:outputText value="#{lecture.lecture}" />
+									        </p:column>
+									        <p:column headerText="Semester">
+									            <h:outputText value="#{lecture.semester.name}" />
+									        </p:column>
+									        <f:facet name="footer">
+									            <p:commandButton actionListener="#{studentMB.addOwnedLecture}" process="checkboxDT" update=":form" icon="ui-icon-search" value="Kaydet" oncomplete="PF('choose').hide()" />
+									        </f:facet>
+									    </p:dataTable>	
+								</h:panelGrid>
+							</h:form>
+						</p:dialog>
+
+			</sec:authorize>     
+                   
+                </div>
+     
+    </ui:define>
+
+
+</ui:composition>
