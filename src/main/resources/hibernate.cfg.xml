@@ -37,10 +37,10 @@
 		<property name="current_session_context_class">thread</property>
 		
 		<!-- names the annotated entity class -->
-		<mapping class="spring.model.Employee"/>
-		<mapping class="spring.model.Role"/>
-		<mapping class="spring.model.User"/>
-		<mapping class="spring.model.Aidat"/>
+		<mapping class="mmts.model.Employee"/>
+		<mapping class="mmts.model.Role"/>
+		<mapping class="mmts.model.User"/>
+		<mapping class="mmts.model.Aidat"/>
 		
 	</session-factory>
 </hibernate-configuration>
