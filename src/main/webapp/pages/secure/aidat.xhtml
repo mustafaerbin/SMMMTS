@@ -8,22 +8,24 @@
 	<ui:define name="content">
 		<div class="ContainerIndent">
 			<sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')">
-				<p:panel> 
-
+				<p:panel>
 					<div class="ContainerIndent">
 						<h:form id="form">
 							<p:growl id="msgs" showDetail="true" />
 							<p:dataTable id="singleDT" var="aidat"
-								value="#{aidatMB.aidatList}" selectionMode="single"
-								selection="#{aidatMB.selectedAidat}" rowKey="#{aidat.aidatId}"
-								filteredValue="#{aidatMB.filteredAidat}" rows="10"
+								value="#{aidatMB.aidatList}"  
+								selection="#{aidatMB.selectedAidatlar}"
+								rowKey="#{aidat.aidatId}"
+								filteredValue="#{aidatMB.filteredAidat}" rows="12"
 								paginator="true" paginatorPosition="bottom"
 								sortBy="#{employee.ad}" sortOrder="ASCENDING"
 								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,15" emptyMessage="Aidat Bulunamadı">
+								rowsPerPageTemplate="12,24,36" emptyMessage="Aidat Bulunamadı">
+
 								<p:ajax event="rowSelect" listener="#{aidatMB.onRowSelect}"
 									update=":form" />
-
+								<p:column selectionMode="multiple"
+									style="width:16px;text-align:center" />
 								<p:column headerText="Adı Soyadı"
 									styleClass="#{(aidat.miktar - aidat.miktarOdenen) gt 0 ? 'redCell' : 'redCell'}
                                                    ">
@@ -54,11 +56,11 @@
 								<p:column headerText="Kalan Miktar" filterable="false"
 									filterMatchMode="contains">
 									<h:outputText value="#{aidat.miktar - aidat.miktarOdenen}" />
-								</p:column> 
+								</p:column>
 
 								<f:facet name="footer">
 									<p:commandButton process="singleDT" update=":add" value="Add"
-										icon="ui-icon-plus" oncomplete="PF('add').show()" /> 
+										icon="ui-icon-plus" oncomplete="PF('add').show()" />
 								</f:facet>
 							</p:dataTable>
 						</h:form>

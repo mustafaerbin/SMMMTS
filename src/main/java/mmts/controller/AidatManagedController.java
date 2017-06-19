@@ -62,6 +62,8 @@ public class AidatManagedController implements Serializable {
 	 * Seçilen Student objesi
 	 */
 	private Aidat selectedAidat;
+
+	private List<Aidat> selectedAidatlar;
 	/*
 	 * Sorgulama iþleminde kullanýlan id
 	 */
@@ -211,6 +213,14 @@ public class AidatManagedController implements Serializable {
 
 	public void setAidatList(List<Aidat> aidatList) {
 		this.aidatList = aidatList;
+	}
+
+	public List<Aidat> getSelectedAidatlar() {
+		return selectedAidatlar;
+	}
+
+	public void setSelectedAidatlar(List<Aidat> selectedAidatlar) {
+		this.selectedAidatlar = selectedAidatlar;
 	}
 
 }

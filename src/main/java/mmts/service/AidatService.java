@@ -44,17 +44,21 @@ public class AidatService {
 
 	public List<Aidat> getAidatlar() {
 
-	//	Long employeId = userContextService.getEmployeeId(); // login olan kullanýcý id'si
+		// Long employeId = userContextService.getEmployeeId(); // login olan
+		// kullanýcý id'si
 		return getAidatDAO().getTumAidatlar();
 
 	}
-	
+
 	public List<Aidat> getAidatlarWithUser(Long user_id) {
-
-		//	Long employeId = userContextService.getEmployeeId(); // login olan kullanýcý id'si
-			return getAidatDAO().getTumAidatlarWithUser(user_id);
-
-		}
+		// Long employeId = userContextService.getEmployeeId(); // login olan
+		// kullanýcý id'si
+		return getAidatDAO().getTumAidatlarWithUser(user_id);
+	}
+	
+	public List<Aidat> getAidatWithEmployeeName(String name){
+		return null;
+	}
 
 	public AidatDAO getAidatDAO() {
 		return aidatDAO;

@@ -15,6 +15,7 @@ import org.primefaces.event.SelectEvent;
 import org.springframework.dao.DataAccessException;
 
 import mmts.model.Aidat;
+import mmts.model.Employee;
 import mmts.service.AidatService;
 import mmts.service.UserContextService;
 
@@ -54,6 +55,11 @@ public class AidatlarManagedController implements Serializable {
 	 * Ekrandan gönderilen deðiþlen
 	 */
 	private String name;
+
+	/*
+	 * Ekrandan gönderilen deðiþlen
+	 */
+	private String employeeName;
 	/*
 	 * Ekrandaki butonlarýn aktivasyonu için kullanýlan deðiþken
 	 */
@@ -115,13 +121,31 @@ public class AidatlarManagedController implements Serializable {
 	 * doldurduðumuz metoddur
 	 */
 	public List<Aidat> getAidatList() {
-		//Long id = userContextService.getEmployeeId();
+		// Long id = userContextService.getEmployeeId();
 
 		if (aidatList == null) {
 			aidatList = new ArrayList<Aidat>();
 			aidatList.addAll(getAidatService().getAidatlar());
 		}
 		return aidatList;
+	}
+
+	/**
+	 * Named Query kullanarak id sine göre öðrenci aradýðýmýz ve öðrenci
+	 * listemizi güncellediðimiz medtoddur
+	 */
+	public void getEmployeeById() {
+		try {
+			if (aidatList == null) {
+				aidatList = new ArrayList<Aidat>();
+				aidatList.addAll(getAidatService().getAidatWithEmployeeName(employeeName));
+			} else {
+				aidatList.clear();
+				aidatList.addAll(getAidatService().getAidatWithEmployeeName(employeeName));
+			}
+		} catch (DataAccessException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	/**
@@ -205,4 +229,11 @@ public class AidatlarManagedController implements Serializable {
 		this.aidatList = aidatList;
 	}
 
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
 }

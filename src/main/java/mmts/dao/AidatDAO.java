@@ -70,9 +70,6 @@ public class AidatDAO {
 	public List<Aidat> getTumAidatlar() {
 
 		List<Aidat> list = getSessionFactory().getCurrentSession().createCriteria(Aidat.class).list();
-
-		
-		
 		return list;
 	}
 
@@ -81,7 +78,14 @@ public class AidatDAO {
 
 		List<Aidat> list = getSessionFactory().getCurrentSession().createQuery("from Aidat where MukellefId=?")
 				.setParameter(0, user_id).list();
+		 return list;
+	}
+	
+	@SuppressWarnings({ "unchecked" })
+	public List<Aidat> getAllDuesWithUser(String employe_name){
 		
+		List<Aidat> list = getSessionFactory().getCurrentSession().createQuery("from Aidat where MukellefId=?")
+				.setParameter(0, employe_name).list();
 		 return list;
 	}
 

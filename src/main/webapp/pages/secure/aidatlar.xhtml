@@ -9,47 +9,50 @@
 		<div class="ContainerIndent">
 			<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
 				<p:panel>
-					<div class="ContainerIndent">
+					<!-- 					<div class="ContainerIndent">
 						<h:form>
 							<h:panelGrid columns="3">
 								<p:outputLabel for="name" value="Mukellef Adı : "
 									style="font-weight:bold" />
-								<p:inputText id="name" value="#{aidatlarMB.id}"
+								<p:inputText id="name" value="#{aidatlarMB.employeeName}"
 									requiredMessage="Adı boş bırakılamaz!" required="false" />
 								<p:commandButton value="Ara"
 									actionListener="#{aidatlarMB.getEmployeeById}"
 									styleClass="ui-priority-primary" update=":form" />
 							</h:panelGrid>
 						</h:form>
-					</div>
+					</div> -->
 
 					<div class="ContainerIndent">
 						<h:form id="form">
 							<p:growl id="msgs" showDetail="true" />
 							<p:dataTable id="singleDT" var="aidat"
 								value="#{aidatlarMB.aidatList}" selectionMode="single"
-								selection="#{aidatlarMB.selectedAidat}" rowKey="#{aidat.aidatId}"
-								filteredValue="#{aidatlarMB.filteredAidat}" rows="10"
+								selection="#{aidatlarMB.selectedAidat}"
+								rowKey="#{aidat.aidatId}"
+								filteredValue="#{aidatlarMB.filteredAidat}" rows="12"
 								paginator="true" paginatorPosition="bottom"
 								sortBy="#{employee.ad}" sortOrder="ASCENDING"
 								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,15" emptyMessage="Student not found">
+								rowsPerPageTemplate="12,24,36" emptyMessage="Student not found">
 								<p:ajax event="rowSelect" listener="#{aidatlarMB.onRowSelect}"
 									update=":form" />
 
-								<p:column headerText="Adı Soyadı"
-									styleClass="#{(aidat.miktar - aidat.miktarOdenen) gt 0 ? 'redCell' : 'redCell'}
-                                                   ">
+								<p:column headerText="Adı Soyadı" filterable="true"
+									filterBy="#{aidat.mukellef.ad} #{aidat.mukellef.soyad}"
+									filterMatchMode="contains"
+									styleClass="#{(aidat.miktar - aidat.miktarOdenen) gt 0 ? 'redCell' : 'redCell'}">
+
 									<h:outputText
 										value="#{aidat.mukellef.ad} #{aidat.mukellef.soyad}" />
 								</p:column>
 
-								<p:column headerText="Ay" filterable="false"
-									filterBy="#{aidat.ay}" filterMatchMode="contains">
+								<p:column headerText="Ay" filterable="true"
+									filterBy="#{aidat.ay}"  >
 									<h:outputText value="#{aidat.ay}" />
 								</p:column>
 
-								<p:column headerText="Yıl" filterable="false"
+								<p:column  headerText="Yıl" filterable="true"
 									filterBy="#{aidat.yil}" filterMatchMode="contains">
 									<h:outputText value="#{aidat.yil}" />
 								</p:column>
@@ -75,7 +78,7 @@
 									</p:commandLink>
 								</p:column>
 
-								<f:facet name="footer"> 
+								<f:facet name="footer">
 									<p:commandButton process="singleDT" update=":detail"
 										disabled="#{aidatlarMB.enableButton}" value="Detail"
 										icon="ui-icon-zoomout" oncomplete="PF('detail').show()" />

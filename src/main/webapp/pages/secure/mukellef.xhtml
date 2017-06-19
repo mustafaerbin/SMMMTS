@@ -11,19 +11,6 @@
 				<p:growl id="growl" showDetail="true" sticky="true" />
 				<p:panel>
 					<div class="ContainerIndent">
-						<h:form>
-							<h:panelGrid columns="3">
-								<p:outputLabel for="name" value="Mukellef Adı : "
-									style="font-weight:bold" />
-								<p:inputText id="name" value="#{employeeMB.id}"
-									requiredMessage="Adı boş bırakılamaz!" required="false" />
-								<p:commandButton value="Ara"
-									actionListener="#{employeeMB.getEmployeeById}"
-									styleClass="ui-priority-primary" update=":form" />
-							</h:panelGrid>
-						</h:form>
-					</div>
-					<div class="ContainerIndent">
 						<h:form id="form">
 							<p:growl id="msgs" showDetail="true" />
 							<p:dataTable id="singleDT" var="employee"
@@ -38,7 +25,7 @@
 								<p:ajax event="rowSelect" listener="#{employeeMB.onRowSelect}"
 									update=":form" />
 
-								<p:column headerText="Adı" filterable="false"
+								<p:column headerText="Adı" filterable="true"
 									filterBy="#{employee.ad}" filterMatchMode="contains">
 									<h:outputText value="#{employee.ad}" />
 								</p:column>
@@ -58,7 +45,7 @@
 										value="Yeni Mükellef" icon="ui-icon-plus"
 										oncomplete="PF('add').show()" />
 									<p:commandButton process="singleDT" update=":aidatEkle"
-										disabled="#{employeeMB.enableButton}" value="Aidat Ekle"
+										disabled="#{employeeMB.enableButton}" value="Aidat Tahakkuk"
 										icon="ui-icon-plus" oncomplete="PF('aidatEkle').show()" />
 									<p:commandButton process="singleDT" update=":detail"
 										disabled="#{employeeMB.enableButton}" value="Detay"
@@ -113,11 +100,11 @@
 
 
 								<f:facet name="footer">
-									<p:commandButton value="Add" id="ajax"
+									<p:commandButton value="Ekle" id="ajax"
 										actionListener="#{employeeMB.addEmployee}"
-										styleClass="ui-priority-primary" oncomplete="PF('add').hide()"
+										styleClass="GreenButton" oncomplete="PF('add').hide()"
 										update=":form growl" />
-									<p:commandButton value="Cancel" id="ajaxx"
+									<p:commandButton value="İptal" id="ajaxx"
 										styleClass="RedButton" style="float:right"
 										oncomplete="PF('add').hide()" immediate="true" />
 
@@ -171,9 +158,9 @@
 
 									<p:commandButton value="Güncelle" id="ajax"
 										actionListener="#{employeeMB.updateEmployee}"
-										styleClass="ui-priority-primary"
-										oncomplete="PF('update').hide()" update=":form" />
-									<p:commandButton value="Çıkış" id="ajaxx"
+										styleClass="GreenButton" oncomplete="PF('update').hide()"
+										update=":form" />
+									<p:commandButton value="İptal" id="ajaxx"
 										styleClass="RedButton" style="float:right"
 										oncomplete="PF('update').hide()" immediate="true" />
 								</f:facet>
@@ -242,24 +229,20 @@
 					</h:form>
 				</p:dialog>
 
-				<p:dialog header="Aidat Ekle" widgetVar="aidatEkle" modal="true"
+				<p:dialog header="Aidat Tahakkuk" widgetVar="aidatEkle" modal="true"
 					showEffect="fade" hideEffect="clip" resizable="false"
 					responsive="true">
 					<h:form id="aidatEkle">
 						<h:panelGrid columns="1">
 							<p:outputPanel id="showTitle" style="text-align:center;">
 								<p:panelGrid columns="2" columnClasses="label,value">
-									<h:outputText value="İsim Soyisim" style="float:left" />
-									<h:outputText
-										value="#{employeeMB.selectedEmployee.ad} #{employeeMB.selectedEmployee.soyad}"
-										style="float:left" />
-									<h:outputText value="Kullanıcı" style="float:left" />
-									<h:outputText value="#{employeeMB.selectedEmployee.eMail}"
-										style="float:left" />
-									<h:outputText value="Şifre" style="float:left" />
-									<h:outputText
-										value="#{employeeMB.selectedEmployee.user.password}"
-										style="float:left" />
+									<h:outputLabel for="multiple" value="Multiple:" />
+									<p:selectCheckboxMenu id="multiple"
+										value="#{checkboxView.selectedCities2}" label="Cities"
+										multiple="true" filter="true" filterMatchMode="startsWith"
+										panelStyle="width:250px">
+										<f:selectItems value="#{checkboxView.cities}" />
+									</p:selectCheckboxMenu>
 								</p:panelGrid>
 							</p:outputPanel>
 
