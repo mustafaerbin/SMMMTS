@@ -13,7 +13,7 @@
 						<h:form id="form">
 							<p:growl id="msgs" showDetail="true" />
 							<p:dataTable id="singleDT" var="aidat"
-								value="#{aidatMB.aidatList}"  
+								value="#{aidatMB.aidatList}"
 								selection="#{aidatMB.selectedAidatlar}"
 								rowKey="#{aidat.aidatId}"
 								filteredValue="#{aidatMB.filteredAidat}" rows="12"
@@ -24,6 +24,7 @@
 
 								<p:ajax event="rowSelect" listener="#{aidatMB.onRowSelect}"
 									update=":form" />
+
 								<p:column selectionMode="multiple"
 									style="width:16px;text-align:center" />
 								<p:column headerText="Adı Soyadı"
@@ -59,10 +60,21 @@
 								</p:column>
 
 								<f:facet name="footer">
+
 									<p:commandButton process="singleDT" update=":add" value="Add"
 										icon="ui-icon-plus" oncomplete="PF('add').show()" />
 								</f:facet>
 							</p:dataTable>
+							<h:commandLink>
+								<p:graphicImage name="sentinel-layout/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="singleDT"
+									fileName="aidatList" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="sentinel-layout/images/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="singleDT" fileName="aidatList" />
+							</h:commandLink>
 						</h:form>
 					</div>
 				</p:panel>

@@ -92,6 +92,16 @@
 										oncomplete="PF('delete').show()" />
 								</f:facet>
 							</p:dataTable>
+							<h:commandLink>
+								<p:graphicImage name="sentinel-layout/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="singleDT"
+									fileName="aidatList" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="sentinel-layout/images/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="singleDT" fileName="aidatList" />
+							</h:commandLink>
 						</h:form>
 					</div>
 				</p:panel>
